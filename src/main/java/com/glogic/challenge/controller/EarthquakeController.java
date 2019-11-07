@@ -2,6 +2,7 @@ package com.glogic.challenge.controller;
 
 import com.glogic.challenge.model.FeatureCollection;
 import com.glogic.challenge.service.EarthquakeService;
+import com.glogic.challenge.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
@@ -11,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class EarthquakeController {
@@ -24,17 +24,26 @@ public class EarthquakeController {
 
     @RequestMapping(value = "getEarthquakesBetweenDates", method = RequestMethod.GET)
     public ResponseEntity<FeatureCollection> getEarthquakesBetweenDates(
-            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-mm-dd") Date startDate,
-            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-mm-dd") Date endDate
+            @RequestParam("startDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date endDate
             ) {
         return earthQuakeService.getEarthquakesBetweenDates(startDate, endDate);
     }
 
     @RequestMapping(value = "getEarthquakesBetweenMagnitudes", method = RequestMethod.GET)
     public ResponseEntity<FeatureCollection> getEarthquakesBetweenMagnitudes(
-            @RequestParam("minMagnitude") @NumberFormat(pattern = "#.#") BigDecimal minMagnitude,
-            @RequestParam("maxMagnitude") @NumberFormat(pattern = "#.#") BigDecimal maxMagnitude
+            @RequestParam("minMagnitude") @NumberFormat(pattern = Constants.MAGNITUDE_FORMAT) BigDecimal minMagnitude,
+            @RequestParam("maxMagnitude") @NumberFormat(pattern = Constants.MAGNITUDE_FORMAT) BigDecimal maxMagnitude
     ) {
         return earthQuakeService.getEarthquakesBetweenMagnitudes(minMagnitude, maxMagnitude);
+    }
+
+
+    @RequestMapping(value = "getEarthquakesByCountries", method = RequestMethod.GET)
+    public ResponseEntity<List<FeatureCollection>> getEarthquakesBetweenMagnitudes(
+            @RequestParam("countryCode") String countryCode,
+            @RequestParam("anotherCountryCode") String anotherCountryCode
+    ) {
+        return earthQuakeService.getEarthquakesInsideCircle(countryCode, anotherCountryCode);
     }
 }
