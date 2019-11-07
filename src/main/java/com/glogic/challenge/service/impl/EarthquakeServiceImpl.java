@@ -25,6 +25,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * The type Earthquake service.
+ */
 @Service
 public class EarthquakeServiceImpl implements EarthquakeService {
 

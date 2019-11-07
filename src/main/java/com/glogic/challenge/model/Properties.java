@@ -5,6 +5,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * The type Properties for the API responses.
+ */
 @Data
 public class Properties {
     private BigDecimal mag;

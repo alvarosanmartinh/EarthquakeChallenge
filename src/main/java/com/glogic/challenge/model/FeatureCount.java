@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Feature count for the API responses.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

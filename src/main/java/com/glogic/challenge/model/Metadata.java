@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Metadata for the API responses.
+ */
 @Data
 public class Metadata {
     private BigDecimal generated;
