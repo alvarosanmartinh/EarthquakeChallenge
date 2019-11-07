@@ -27,7 +27,7 @@ public class EarthquakeController {
     public ResponseEntity<FeatureCollection> getEarthquakesBetweenDates(
             @RequestParam("startDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date endDate
-            ) {
+    ) {
         return earthQuakeService.getEarthquakesBetweenDates(startDate, endDate);
     }
 
@@ -36,9 +36,10 @@ public class EarthquakeController {
             @RequestParam("minMagnitude") @NumberFormat(pattern = Constants.MAGNITUDE_FORMAT) BigDecimal minMagnitude,
             @RequestParam("maxMagnitude") @NumberFormat(pattern = Constants.MAGNITUDE_FORMAT) BigDecimal maxMagnitude
     ) {
-        return earthQuakeService.getEarthquakesBetweenMagnitudes(minMagnitude, maxMagnitude);
+        return earthQuakeService.getEarthquakesBetweenMagnitudes(
+                minMagnitude,
+                maxMagnitude);
     }
-
 
     @RequestMapping(value = "getEarthquakesByCountriesBetweenDates", method = RequestMethod.GET)
     public ResponseEntity<FeatureCount> getEarthquakesByCountriesBetweenDates(
@@ -47,9 +48,12 @@ public class EarthquakeController {
             @RequestParam("startDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date endDate
     ) {
-        return earthQuakeService.getEarthquakesByCountriesBetweenDates(countryCode, anotherCountryCode, startDate, endDate);
+        return earthQuakeService.getEarthquakesByCountriesBetweenDates(
+                countryCode,
+                anotherCountryCode,
+                startDate,
+                endDate);
     }
-
 
     @RequestMapping(value = "getEarthquakesByCountry", method = RequestMethod.GET)
     public ResponseEntity<FeatureCollection> getEarthquakesByCountry(
@@ -57,4 +61,19 @@ public class EarthquakeController {
     ) {
         return earthQuakeService.getEarthquakesByCountry(countryCode);
     }
+
+    @RequestMapping(value = "getEarthquakesBetweenTwoRangesOfDates", method = RequestMethod.GET)
+    public ResponseEntity<List<FeatureCollection>> getEarthquakesBetweenTwoRangesOfDates(
+            @RequestParam("firstStartDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date firstStartDate,
+            @RequestParam("firstEndDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date firstEndDate,
+            @RequestParam("secondStartDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date secondStartDate,
+            @RequestParam("secondEndDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date secondEndDate
+    ) {
+        return earthQuakeService.getEarthquakesBetweenTwoRangesOfDates(
+                firstStartDate,
+                firstEndDate,
+                secondStartDate,
+                secondEndDate);
+    }
+
 }

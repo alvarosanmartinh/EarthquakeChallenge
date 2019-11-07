@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.xml.ws.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,6 +46,33 @@ public class EarthquakeServiceImpl implements EarthquakeService {
                 .queryParam("endtime", simpleDateFormat.format(endDate));
 
         return callEarthquakesApiService(builder.toUriString());
+    }
+
+    @Override
+    public ResponseEntity<List<FeatureCollection>> getEarthquakesBetweenTwoRangesOfDates(Date firstStartDate,
+                                                                                         Date firstEndDate,
+                                                                                         Date secondStartDate,
+                                                                                         Date secondEndDate) {
+        ArrayList<FeatureCollection> response = new ArrayList<>();
+
+        ResponseEntity<FeatureCollection> featureCollectionResponseEntity =
+                getEarthquakesBetweenDates(firstStartDate, firstEndDate);
+
+        if(featureCollectionResponseEntity.getStatusCode() == HttpStatus.OK)
+            response.add(featureCollectionResponseEntity.getBody());
+        else {
+            return ResponseEntity.status(featureCollectionResponseEntity.getStatusCode()).body(new ArrayList<>());
+        }
+
+        featureCollectionResponseEntity = getEarthquakesBetweenDates(secondStartDate, secondEndDate);
+
+        if(featureCollectionResponseEntity.getStatusCode() == HttpStatus.OK)
+            response.add(featureCollectionResponseEntity.getBody());
+        else {
+            return ResponseEntity.status(featureCollectionResponseEntity.getStatusCode()).body(new ArrayList<>());
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @Override

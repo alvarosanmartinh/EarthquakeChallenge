@@ -11,6 +11,7 @@ import java.util.List;
 public interface EarthquakeService {
     ResponseEntity<FeatureCollection> getEarthquakesBetweenDates(Date starttime,
                                                                  Date endtime);
+
     ResponseEntity<FeatureCollection> getEarthquakesBetweenMagnitudes(BigDecimal minMagnitude,
                                                                       BigDecimal maxMagnitude);
 
@@ -18,5 +19,11 @@ public interface EarthquakeService {
                                                                        String anotherCountrCode,
                                                                        Date startDate,
                                                                        Date endDate);
+
     ResponseEntity<FeatureCollection> getEarthquakesByCountry(String countryCode);
+
+    ResponseEntity<List<FeatureCollection>> getEarthquakesBetweenTwoRangesOfDates(Date firstStartDate,
+                                                                            Date firstEndDate,
+                                                                            Date secondStartDate,
+                                                                            Date secondEndDate);
 }
