@@ -40,8 +40,8 @@ public class EarthquakeController {
     }
 
 
-    @RequestMapping(value = "getEarthquakesCountByCountriesAndDates", method = RequestMethod.GET)
-    public ResponseEntity<FeatureCount> getEarthquakesCountByCountriesAndDates(
+    @RequestMapping(value = "getEarthquakesByCountriesBetweenDates", method = RequestMethod.GET)
+    public ResponseEntity<FeatureCount> getEarthquakesByCountriesBetweenDates(
             @RequestParam("countryCode") String countryCode,
             @RequestParam("anotherCountryCode") String anotherCountryCode,
             @RequestParam("startDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date startDate,
