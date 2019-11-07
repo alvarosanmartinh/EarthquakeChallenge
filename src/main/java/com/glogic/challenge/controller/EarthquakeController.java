@@ -1,6 +1,7 @@
 package com.glogic.challenge.controller;
 
 import com.glogic.challenge.model.FeatureCollection;
+import com.glogic.challenge.model.FeatureCount;
 import com.glogic.challenge.service.EarthquakeService;
 import com.glogic.challenge.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +40,21 @@ public class EarthquakeController {
     }
 
 
-    @RequestMapping(value = "getEarthquakesByCountries", method = RequestMethod.GET)
-    public ResponseEntity<List<FeatureCollection>> getEarthquakesBetweenMagnitudes(
+    @RequestMapping(value = "getEarthquakesCountByCountriesAndDates", method = RequestMethod.GET)
+    public ResponseEntity<FeatureCount> getEarthquakesCountByCountriesAndDates(
             @RequestParam("countryCode") String countryCode,
-            @RequestParam("anotherCountryCode") String anotherCountryCode
+            @RequestParam("anotherCountryCode") String anotherCountryCode,
+            @RequestParam("startDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date endDate
     ) {
-        return earthQuakeService.getEarthquakesInsideCircle(countryCode, anotherCountryCode);
+        return earthQuakeService.getEarthquakesByCountriesBetweenDates(countryCode, anotherCountryCode, startDate, endDate);
+    }
+
+
+    @RequestMapping(value = "getEarthquakesByCountry", method = RequestMethod.GET)
+    public ResponseEntity<FeatureCollection> getEarthquakesByCountry(
+            @RequestParam("countryCode") String countryCode
+    ) {
+        return earthQuakeService.getEarthquakesByCountry(countryCode);
     }
 }

@@ -7,5 +7,6 @@ public class Constants {
     public static final String COUNT_API_URL = BASE_API_URL + "count" + FORMAT_GEOJSON;
     public static final String DATE_FORMAT = "yyyy-mm-dd";
     public static final String MAGNITUDE_FORMAT = "0.0";
-    public static final Integer API_LIMIT_RESULT_SIZE = 100;
+    public static final Integer API_MAX_RADIUS_KM = 1000;
+    public static final Integer API_LIMIT_RESULT_SIZE = 500;
 }
