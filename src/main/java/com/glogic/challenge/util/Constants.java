@@ -25,7 +25,7 @@ public class Constants {
     /**
      * The constant DATE_FORMAT, used to format the dates before they are added to the API URL as parameters.
      */
-    public static final String DATE_FORMAT = "yyyy-mm-dd";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
     /**
      * The constant MAGNITUDE_FORMAT, used to format the magnitudes before they are added to the API URL as parameters.
      */

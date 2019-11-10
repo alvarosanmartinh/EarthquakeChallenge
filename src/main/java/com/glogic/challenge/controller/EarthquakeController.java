@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -76,7 +77,7 @@ public class EarthquakeController {
             @RequestParam("anotherCountryCode") String anotherCountryCode,
             @RequestParam("startDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = Constants.DATE_FORMAT) Date endDate
-    ) {
+    ) throws IOException {
         return earthQuakeService.getEarthquakesByCountriesBetweenDates(
                 countryCode,
                 anotherCountryCode,
@@ -93,7 +94,7 @@ public class EarthquakeController {
     @RequestMapping(value = "getEarthquakesByCountry", method = RequestMethod.GET)
     public ResponseEntity<FeatureCollection> getEarthquakesByCountry(
             @RequestParam("countryCode") String countryCode
-    ) {
+    ) throws IOException {
         return earthQuakeService.getEarthquakesByCountry(countryCode);
     }
 

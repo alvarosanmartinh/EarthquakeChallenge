@@ -51,11 +51,19 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     public ResponseEntity<FeatureCollection> getEarthquakesBetweenDates(Date startDate,
                                                                         Date endDate) {
         simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+        String formattedStartDate = "0";
+        String formattedEndDate = "0";
+
+        try {
+            formattedStartDate = simpleDateFormat.format(startDate);
+            formattedEndDate = simpleDateFormat.format(endDate);
+        } catch (Exception ignored) {
+        }
 
         builder = UriComponentsBuilder
                 .fromUriString(Constants.QUERY_API_URL)
-                .queryParam("starttime", simpleDateFormat.format(startDate))
-                .queryParam("endtime", simpleDateFormat.format(endDate));
+                .queryParam("starttime", formattedStartDate)
+                .queryParam("endtime", formattedEndDate);
 
         return callEarthquakesApiService(builder.toUriString());
     }
@@ -70,7 +78,7 @@ public class EarthquakeServiceImpl implements EarthquakeService {
         ResponseEntity<FeatureCollection> featureCollectionResponseEntity =
                 getEarthquakesBetweenDates(firstStartDate, firstEndDate);
 
-        if(featureCollectionResponseEntity.getStatusCode() == HttpStatus.OK)
+        if (featureCollectionResponseEntity.getStatusCode() == HttpStatus.OK)
             response.add(featureCollectionResponseEntity.getBody());
         else {
             return ResponseEntity.status(featureCollectionResponseEntity.getStatusCode()).body(new ArrayList<>());
@@ -78,7 +86,7 @@ public class EarthquakeServiceImpl implements EarthquakeService {
 
         featureCollectionResponseEntity = getEarthquakesBetweenDates(secondStartDate, secondEndDate);
 
-        if(featureCollectionResponseEntity.getStatusCode() == HttpStatus.OK)
+        if (featureCollectionResponseEntity.getStatusCode() == HttpStatus.OK)
             response.add(featureCollectionResponseEntity.getBody());
         else {
             return ResponseEntity.status(featureCollectionResponseEntity.getStatusCode()).body(new ArrayList<>());
@@ -90,10 +98,18 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     @Override
     public ResponseEntity<FeatureCollection> getEarthquakesBetweenMagnitudes(BigDecimal minMagnitude,
                                                                              BigDecimal maxMagnitude) {
+        String formattedMinMagnitude = "null";
+        String formattedMaxMagnitude = "null";
+
+        try {
+            formattedMinMagnitude = decimalFormat.format(minMagnitude);
+            formattedMaxMagnitude = decimalFormat.format(maxMagnitude);
+        } catch (Exception ignored) {
+        }
         builder = UriComponentsBuilder
                 .fromUriString(Constants.QUERY_API_URL)
-                .queryParam("minmagnitude", minMagnitude)
-                .queryParam("maxmagnitude", maxMagnitude);
+                .queryParam("minmagnitude", formattedMinMagnitude)
+                .queryParam("maxmagnitude", formattedMaxMagnitude);
 
         return callEarthquakesApiService(builder.toUriString());
     }
@@ -102,40 +118,44 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     public ResponseEntity<FeatureCount> getEarthquakesByCountriesBetweenDates(String countryCode,
                                                                               String anotherCountrCode,
                                                                               Date startDate,
-                                                                              Date endDate) {
+                                                                              Date endDate) throws IOException {
         simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+        String formattedStartDate = "0";
+        String formattedEndDate = "0";
 
-        FeatureCount response = new FeatureCount(new BigDecimal(0),new BigDecimal(20000));
+        try {
+            formattedStartDate = simpleDateFormat.format(startDate);
+            formattedEndDate = simpleDateFormat.format(endDate);
+        } catch (Exception ignored) {
+        }
+
+        FeatureCount response = new FeatureCount(new BigDecimal(0), new BigDecimal(20000));
         List<List<String>> countryCoordinates = new ArrayList<>();
         List<String> countryCodes = new ArrayList<>();
 
         countryCodes.add(countryCode);
         countryCodes.add(anotherCountrCode);
 
-        try{
-            countryCoordinates.addAll(findCountriesCoordinatesOnJsonFileByCountryCode(countryCodes));
-        } catch (IOException e) {
-            e.printStackTrace();
+        countryCoordinates.addAll(findCountriesCoordinatesOnJsonFileByCountryCode(countryCodes));
+
+        if (countryCoordinates.size() < 1) {
+            return ResponseEntity.badRequest().body(response);
         }
 
-        if(countryCoordinates.size()<1){
-            return ResponseEntity.ok(response);
-        }
-
-        for (List<String> countryCoordinate: countryCoordinates) {
+        for (List<String> countryCoordinate : countryCoordinates) {
             builder = UriComponentsBuilder
                     .fromUriString(Constants.COUNT_API_URL)
-                    .queryParam("starttime", simpleDateFormat.format(startDate))
-                    .queryParam("endtime", simpleDateFormat.format(endDate))
+                    .queryParam("starttime", formattedStartDate)
+                    .queryParam("endtime", formattedEndDate)
                     .queryParam("latitude", countryCoordinate.get(0))
                     .queryParam("longitude", countryCoordinate.get(1))
                     .queryParam("maxradius", 90);
 
             ResponseEntity<FeatureCount> featureCountResponseEntity =
                     callEarthquakesCountApiService(builder.toUriString());
-            if(featureCountResponseEntity.getStatusCode() == HttpStatus.OK){
+            if (featureCountResponseEntity.getStatusCode() == HttpStatus.OK) {
                 response.setCount(response.getCount().add(featureCountResponseEntity.getBody().getCount()));
-            }else{
+            } else {
                 return featureCountResponseEntity;
             }
         }
@@ -144,7 +164,7 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     }
 
     @Override
-    public ResponseEntity<FeatureCollection> getEarthquakesByCountry(String countryCode) {
+    public ResponseEntity<FeatureCollection> getEarthquakesByCountry(String countryCode) throws IOException {
 
         FeatureCollection response = new FeatureCollection();
         List<List<String>> countryCoordinates = new ArrayList<>();
@@ -152,13 +172,9 @@ public class EarthquakeServiceImpl implements EarthquakeService {
         List<String> countryCodes = new ArrayList<>();
         countryCodes.add(countryCode);
 
-        try{
-            countryCoordinates.addAll(findCountriesCoordinatesOnJsonFileByCountryCode(countryCodes));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        countryCoordinates.addAll(findCountriesCoordinatesOnJsonFileByCountryCode(countryCodes));
 
-        if(countryCoordinates.size()<1){
+        if (countryCoordinates.size() < 1) {
             return ResponseEntity.ok(response);
         }
 
@@ -173,7 +189,6 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     }
 
 
-
     private List<List<String>> findCountriesCoordinatesOnJsonFileByCountryCode(List<String> codes) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         List<List<String>> response = new ArrayList<>();
@@ -181,10 +196,10 @@ public class EarthquakeServiceImpl implements EarthquakeService {
         File file = ResourceUtils.getFile("classpath:countriesCoordinates.json");
         Map map = objectMapper.readValue(new FileInputStream(file), Map.class);
 
-        if(null != map.get(codes.get(0)))
-            response.add((List<String>) map.get(codes.get(0)));
-        if(null != map.get(codes.get(1)))
-            response.add((List<String>) map.get(codes.get(1)));
+        for (String code : codes) {
+            if (null != map.get(code))
+                response.add((List<String>) map.get(code));
+        }
 
         return response;
     }

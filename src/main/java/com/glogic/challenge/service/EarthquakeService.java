@@ -4,6 +4,7 @@ import com.glogic.challenge.model.FeatureCollection;
 import com.glogic.challenge.model.FeatureCount;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,7 @@ public interface EarthquakeService {
     ResponseEntity<FeatureCount> getEarthquakesByCountriesBetweenDates(String countryCode,
                                                                        String anotherCountrCode,
                                                                        Date startDate,
-                                                                       Date endDate);
+                                                                       Date endDate) throws IOException;
 
     /**
      * Gets earthquakes by country.
@@ -52,7 +53,7 @@ public interface EarthquakeService {
      * @param countryCode the country code
      * @return the earthquakes by country
      */
-    ResponseEntity<FeatureCollection> getEarthquakesByCountry(String countryCode);
+    ResponseEntity<FeatureCollection> getEarthquakesByCountry(String countryCode) throws IOException;
 
     /**
      * Gets earthquakes between two ranges of dates.
