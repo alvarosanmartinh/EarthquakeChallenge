@@ -1,19 +1,17 @@
 package com.glogic.challenge
 
 import com.glogic.challenge.controller.EarthquakeController
-import com.glogic.challenge.model.FeatureCollection
 import com.glogic.challenge.service.EarthquakeService
 import com.glogic.challenge.util.Constants
-import groovy.json.JsonSlurper
-import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.MockMvc
+import spock.lang.Specification
 
 import java.text.SimpleDateFormat
 
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.http.HttpStatus.*
-import spock.lang.Specification
+import static org.springframework.http.HttpStatus.OK
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
+
 class EarthquakeControllerTest extends Specification{
 
     def earthquakeService = Mock(EarthquakeService)

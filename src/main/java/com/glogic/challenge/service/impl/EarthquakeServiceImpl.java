@@ -34,6 +34,11 @@ public class EarthquakeServiceImpl implements EarthquakeService {
 
     private RestTemplate restTemplate;
 
+    /**
+     * Instantiates a new Earthquake service.
+     *
+     * @param builder the builder
+     */
     public EarthquakeServiceImpl(RestTemplateBuilder builder) {
         this.restTemplate = builder.build();
     }
