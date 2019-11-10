@@ -7,6 +7,7 @@ import com.glogic.challenge.model.FeatureCount;
 import com.glogic.challenge.service.EarthquakeService;
 import com.glogic.challenge.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,11 @@ import java.util.*;
 @Service
 public class EarthquakeServiceImpl implements EarthquakeService {
 
-    @Autowired
     private RestTemplate restTemplate;
+
+    public EarthquakeServiceImpl(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
 
     private UriComponentsBuilder builder;
     private SimpleDateFormat simpleDateFormat;

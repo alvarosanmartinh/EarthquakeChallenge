@@ -1,59 +1,87 @@
 package com.glogic.challenge
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.glogic.challenge.controller.EarthquakeController
 import com.glogic.challenge.model.FeatureCollection
 import com.glogic.challenge.service.EarthquakeService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Import
+import com.glogic.challenge.util.Constants
+import groovy.json.JsonSlurper
+import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultMatcher
+
+import java.text.SimpleDateFormat
+
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.http.HttpStatus.*
 import spock.lang.Specification
-import spock.mock.DetachedMockFactory
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
-@WebMvcTest(controllers = [EarthquakeController])
 class EarthquakeControllerTest extends Specification{
 
-    @Autowired
-    protected MockMvc mvc
+    def earthquakeService = Mock(EarthquakeService)
+    def earthquakeController = new EarthquakeController(earthquakeService)
 
-    @Autowired
-    EarthquakeService earthquakeService
+    MockMvc mockMvc = standaloneSetup(earthquakeController).build()
 
-    @Autowired
-    ObjectMapper objectMapper
+    def "getEarthquakesBetweenDates test hits the URL with correctly formated values and return HTTP status 200"() {
+        def dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT)
+        when: 'rest url is hit'
+        def response = mockMvc.perform(get('/getEarthquakesBetweenDates')
+                .param("startDate", dateFormat.format(new Date()))
+                .param("endDate", dateFormat.format(new Date())))
+                .andReturn().response
 
-    def "should pass dates and return FeatureCollection"() {
-        given:
-        earthquakeService.getEarthquakesBetweenDates('2019-01-01' as Date, '2019-01-02' as Date) >> new FeatureCollection()
-
-        when:
-        def results = mvc.perform(get('/getEarthquakesBetweenDates?startDate=2019-01-01&endDate=2019-01-02'))
-
-        then:
-        results.andExpect(status().isOk())
-
-        and:
-        results.andExpect(ResultMatcher.isInstance(FeatureCollection.class))
+        then: 'earthquakeService correctly returns status 200'
+        response.status == OK.value()
     }
 
-    @TestConfiguration                                          // 6
-    static class StubConfig {
-        DetachedMockFactory detachedMockFactory = new DetachedMockFactory()
 
-        @Bean
-        EarthquakeService earthquakeService() {
-            return detachedMockFactory.Stub(EarthquakeService)
-        }
+    def "getEarthquakesBetweenMagnitudes test hits the URL with correctly formated values and return HTTP status 200"() {
+        when: 'rest url is hit'
+        def response = mockMvc.perform(get('/getEarthquakesBetweenMagnitudes')
+                .param("minMagnitude", "6.0")
+                .param("maxMagnitude", "6.0"))
+                .andReturn().response
+
+        then: 'earthquakeService correctly returns status 200'
+        response.status == OK.value()
     }
 
+    def "getEarthquakesByCountriesBetweenDates test hits the URL with correctly formated values and return HTTP status 200"() {
+        def dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT)
+        when: 'rest url is hit'
+        def response = mockMvc.perform(get('/getEarthquakesByCountriesBetweenDates')
+                .param("countryCode", "cl")
+                .param("anotherCountryCode", "us")
+                .param("startDate", dateFormat.format(new Date()))
+                .param("endDate", dateFormat.format(new Date())))
+                .andReturn().response
+
+        then: 'earthquakeService correctly returns status 200'
+        response.status == OK.value()
+    }
+
+    def "getEarthquakesByCountry test hits the URL with correctly formated values and return HTTP status 200"() {
+        def dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT)
+        when: 'rest url is hit'
+        def response = mockMvc.perform(get('/getEarthquakesByCountry')
+                .param("countryCode", "cl"))
+                .andReturn().response
+
+        then: 'earthquakeService correctly returns status 200'
+        response.status == OK.value()
+    }
+
+
+    def "getEarthquakesBetweenTwoRangesOfDates test hits the URL with correctly formated values and return HTTP status 200"() {
+        def dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT)
+        when: 'rest url is hit'
+        def response = mockMvc.perform(get('/getEarthquakesBetweenTwoRangesOfDates')
+                .param("firstStartDate", dateFormat.format(new Date()))
+                .param("firstEndDate", dateFormat.format(new Date()))
+                .param("secondStartDate", dateFormat.format(new Date()))
+                .param("secondEndDate", dateFormat.format(new Date())))
+                .andReturn().response
+
+        then: 'earthquakeService correctly returns status 200'
+        response.status == OK.value()
+    }
 }

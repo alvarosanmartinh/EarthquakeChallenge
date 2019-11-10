@@ -23,8 +23,11 @@ import java.util.List;
 @RestController
 public class EarthquakeController {
 
-    @Autowired
-    private EarthquakeService earthQuakeService;
+    private final EarthquakeService earthQuakeService;
+
+    public EarthquakeController(EarthquakeService earthQuakeService) {
+        this.earthQuakeService = earthQuakeService;
+    }
 
     /**
      * Gets earthquakes between dates.
