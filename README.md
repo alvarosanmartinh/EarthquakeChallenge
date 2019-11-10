@@ -15,5 +15,4 @@ at the project's directory, when the compilation and deployment finishes, you ma
 ## Notes
 
 - Each method was created as GET, because there was no mention about this topic at the challenge.
-- Spock tests are not finished, there is just one dummy test.
 - Countries JSON file source is: https://gist.github.com/sindresorhus/1341699
