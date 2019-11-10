@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.OK
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
 
-class EarthquakeControllerTest extends Specification{
+class EarthquakeControllerTest extends Specification {
 
     def earthquakeService = Mock(EarthquakeService)
     def earthquakeController = new EarthquakeController(earthquakeService)
@@ -67,7 +67,6 @@ class EarthquakeControllerTest extends Specification{
         then: 'earthquakeService correctly returns status 200'
         response.status == OK.value()
     }
-
 
     def "getEarthquakesBetweenTwoRangesOfDates test hits the URL with correctly formated values and return HTTP status 200"() {
         def dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT)
